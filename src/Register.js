@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from '@reach/router'
+import firebase from './Firebase'
 
+import FormError from './FormError'
 class Register extends Component {
 
   constructor() {
@@ -9,20 +11,45 @@ class Register extends Component {
       displayName: '',
       email: '',
       passOne: '',
-      passTwo: ''
+      passTwo: '',
+      errorMessage: null
     }
+  }
+  
+  handleSubmit = (e) => {
+    let registrationInfo = {
+      displayName: this.state.displayName,
+      email: this.state.email,
+      password: this.state.passOne
+    }
+    e.preventDefault()
+
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(
+        registrationInfo.email, registrationInfo.password
+      ).catch( err => {
+        if (err.message) this.setState({ errorMessage: err.message })
+        else this.setState({ errorMessage: null })
+      })
   }
 
   handleChange = (e) => {
     const itemName = e.target.name
     const itemValue = e.target.value
-    this.setState({[itemName]: itemValue})
+    this.setState({[itemName]: itemValue}, () => {
+      if (this.state.passOne !== this.state.passTwo) {
+        this.setState({ errorMessage: 'Passwords must match'})
+      } else {
+        this.setState({errorMessage: null})
+      }
+    })
   }
 
   render() {
     const { user } = this.props
     return (
-      <form className="mt-3">
+      <form className="mt-3" onSubmit={this.handleSubmit}>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8">
@@ -30,6 +57,10 @@ class Register extends Component {
                 <div className="card-body">
                   <h3 className="font-weight-light mb-3">Register</h3>
                   <div className="form-row">
+                    { this.state.errorMessage ? 
+                      <FormError theMessage={this.state.errorMessage}/>
+                      : null 
+                    }
                     <section className="col-sm-12 form-group">
                       <label
                         className="form-control-label sr-only"
