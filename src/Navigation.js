@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FaUsers } from 'react-icons/fa'
+import { Link } from '@reach/router'
 
 class Navigation extends Component {
   render() {
@@ -8,14 +9,14 @@ class Navigation extends Component {
     return (
       <nav className="site-nav family-sans navbar navbar-expand bg-primary navbar-dark higher">
         <div className="container-fluid">
-          <a href="/" className="navbar-brand">
+          <Link to="/" className="navbar-brand">
             <FaUsers className="mr-2"/>Meeting Log
-          </a>
+          </Link>
           <div className="navbar-nav ml-auto">
-            { user && <a className="nav-item nav-link" href="/meetings"> meetings </a> }
-            { user && <a className="nav-item nav-link" href="/login"> log out </a> }
-            { !user && <a className="nav-item nav-link" href="/login">log in</a> }
-            { !user && <a className="nav-item nav-link" href="/register"> register </a> }
+            { user && <Link className="nav-item nav-link" to="/meetings"> meetings </Link> }
+            { user && <Link className="nav-item nav-link" to="/login"> log out </Link> }
+            { !user && <Link className="nav-item nav-link" to="/login">log in</Link> }
+            { !user && <Link className="nav-item nav-link" to="/register"> register </Link> }
           </div>
         </div>
       </nav>
